@@ -5,26 +5,45 @@
 #include <stdlib.h>
 
 
-// json array
-
-typedef struct json_array json_array;
-
-struct json_array {
-    int *nums;
-    size_t k;
-    size_t capacity;
-};
-
-void json_array_append(json_array *arr, int n);
-
-// json object
-
-enum type {
+typedef enum {
     STR,
     INT,
     FLOAT,
     ARR,
+    EMPTY
+} json_type;
+
+typedef struct json_object json_object;
+typedef struct json_value json_value;
+typedef struct json_array json_array;
+
+// json object
+
+struct json_object {
+    json_type type;
+    union {
+        char *text;
+        float fval;
+        json_value *val;
+        json_array *arr;
+    };
 };
+
+#define get_json_object(filename) json_object_init(filename)
+
+json_object json_object_init(const char *filename);
+
+// json array
+
+// typedef struct json_array json_array;
+
+struct json_array {
+    json_object *objects;
+    size_t k;
+    size_t capacity;
+};
+
+void json_array_append(json_array *arr, json_object object);
 
 
 //                      [json object]
@@ -44,17 +63,5 @@ enum type {
 //     char *val;
 //     // object_node arr[4];
 // };
-
-// typedef struct json_object json_object;
-
-// struct json_object {
-//     char *cont;
-//     // object_node next_c[10]; // fuck it, i need unlimited arr or actually dont
-//     json_object *next_obj;
-// };
-
-// #define get_json_object(filename) json_object_init(filename)
-
-// json_object json_object_init(const char *filename);
 
 #endif
