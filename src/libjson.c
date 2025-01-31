@@ -22,10 +22,27 @@ json_object json_object_init(const char *filename) {
 
     // json_object *object = calloc(1, sizeof(json_object));
     json_object object;
-    object.type = EMPTY;
-    object.text = NULL;
+    json_object_add(&object, STR, "asd", "asd");
+
+    printf("%s", object.key);
+
+    // object.type = EMPTY;
+    // object.key = "";
+    // object.ival = 0;
 
     return object;
+}
+
+void json_object_add(json_object *object, json_type type, char *key, void *element) {
+    object -> type = type;
+    object -> key = key;
+    switch (type) {
+        case STR: object -> sval = element;
+        case INT: object -> ival = *(int*) element;
+        case FLOAT: object -> fval = *(float*) element;
+        case ARR: object -> aval = element;
+        case EMPTY: break;
+    }
 }
 
 // json array

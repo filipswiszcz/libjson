@@ -14,24 +14,27 @@ typedef enum {
 } json_type;
 
 typedef struct json_object json_object;
-typedef struct json_value json_value;
+// typedef struct json_value json_value;
 typedef struct json_array json_array;
 
 // json object
 
 struct json_object {
     json_type type;
+    char *key;
     union {
-        char *text;
+        char *sval;
+        int ival;
         float fval;
-        json_value *val;
-        json_array *arr;
+        json_array *aval;
     };
 };
 
 #define get_json_object(filename) json_object_init(filename)
 
 json_object json_object_init(const char *filename);
+
+void json_object_add(json_object *object, json_type type, char *key, void *element);
 
 // json array
 
