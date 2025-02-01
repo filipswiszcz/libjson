@@ -9,22 +9,28 @@ json_object json_object_init(const char *filename) {
         printf("[libjson] %s could not be found", filename); // return null
     }
 
+    json_object object;
+
     char *line = NULL;
     size_t len = 0;
-    // int sw = 0;
-    // while (getline(&line, &len, file) != -1) {
-    //     for (int i = 0; i < len; i++) {
-    //         if (line[i] == '{') continue;
-    //         else if (line[i] == '"') sw = 1;
-    //         // if (sw) node
-    //     }
-    // }
+    int k = 0, sw = 0, kr = 1;
+    char *key, *val;
+    while (getline(&line, &len, file) != -1) {
+        for (int i = 0; i < len; i++) {
+            if (line[i] == '{') {k++; continue;}
+            else if (line[i] == '}') {k--; continue;}
+            if (line[i] == '"') {
+                sw = (sw == 1) ? 0 : 1; continue;
+            }
+            if (kr) key += line[i];
+        }
+    }
 
     // json_object *object = calloc(1, sizeof(json_object));
-    json_object object;
-    json_object_add(&object, STR, "asd", "asd");
+    // json_object object;
+    // json_object_add(&object, STR, "asd", "asd");
 
-    printf("%s", object.key);
+    // printf("%s", object.key);
 
     // object.type = EMPTY;
     // object.key = "";
@@ -41,6 +47,7 @@ void json_object_add(json_object *object, json_type type, char *key, void *eleme
         case INT: object -> ival = *(int*) element;
         case FLOAT: object -> fval = *(float*) element;
         case ARR: object -> aval = element;
+        case OBJECT: object -> oval = element;
         case EMPTY: break;
     }
 }

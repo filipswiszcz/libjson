@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 typedef enum {
@@ -10,6 +11,7 @@ typedef enum {
     INT,
     FLOAT,
     ARR,
+    OBJECT,
     EMPTY
 } json_type;
 
@@ -27,6 +29,7 @@ struct json_object {
         int ival;
         float fval;
         json_array *aval;
+        json_object *oval;
     };
 };
 
@@ -34,7 +37,7 @@ struct json_object {
 
 json_object json_object_init(const char *filename);
 
-void json_object_add(json_object *object, json_type type, char *key, void *element);
+void json_object_add(json_object *object, json_type type, char *key, void *element); 
 
 // json array
 
