@@ -14,15 +14,21 @@ json_object json_object_init(const char *filename) {
     char *line = NULL;
     size_t len = 0;
     int k = 0, sw = 0, kr = 1;
-    char *key, *val;
+    char key[256], val[256];
+    int key_p = 0, val_p = 0;
     while (getline(&line, &len, file) != -1) {
         for (int i = 0; i < len; i++) {
-            if (line[i] == '{') {k++; continue;}
-            else if (line[i] == '}') {k--; continue;}
             if (line[i] == '"') {
                 sw = (sw == 1) ? 0 : 1; continue;
             }
-            if (kr) key += line[i];
+            if (sw) {
+                if (kr) key[key_p++] = line[i];
+                else val[val_p++] = line[i];
+            }
+            if (!sw && line[i] == ":") {
+                key[key_p] = '\0';
+                kr = 0; continue;
+            }
         }
     }
 
