@@ -29,7 +29,30 @@ json_object json_object_init(const char *filename) {
                 key[key_p] = '\0';
                 kr = 0; continue;
             }
+            if (!sw && (line[i] == ',' || line[i] == '}')) {
+                val[val_p] = '\0';
+                if (key_p > 0 && val_p > 0) {
+                    if (val[0] == '"') {
+                        json_object_add(&object, STR, strdup(key), strdup(val));
+                    } else if (strchr(val, '.')) {
+                        float fval = atof(val);
+                        json_object_add(&object, FLOAT, strdup(key), &fval);
+                    } else {
+                        int ival = atoi(val);
+                        json_object_add(&object, INT, strdup(key), &ival);
+                    }
+                }
+                key_p = val_p = 0;
+                kr = 1;
+                memset(key, 0, sizeof(key));
+                memset(val, 0 ,sizeof(val));
+            }
         }
+
+        free(line);
+        fclose(file);
+
+        return object;
     }
 
     // json_object *object = calloc(1, sizeof(json_object));
