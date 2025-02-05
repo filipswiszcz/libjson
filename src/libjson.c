@@ -25,7 +25,7 @@ json_object json_object_init(const char *filename) {
                 if (kr) key[key_p++] = line[i];
                 else val[val_p++] = line[i];
             }
-            if (!sw && line[i] == ":") {
+            if (!sw && line[i] == ':') {
                 key[key_p] = '\0';
                 kr = 0; continue;
             }
@@ -68,17 +68,30 @@ json_object json_object_init(const char *filename) {
     return object;
 }
 
+char* json_object_get_str(json_object *object, char *key) {}
+
 void json_object_add(json_object *object, json_type type, char *key, void *element) {
-    object -> type = type;
-    object -> key = key;
+    json_object *last_json_object = object;
+    while (last_json_object -> next != NULL) {
+        last_json_object = last_json_object -> next;
+    }
+
+    json_object *new_json_object = malloc(sizeof(json_object));
+    new_json_object -> type = type;
+    new_json_object -> key = key;
     switch (type) {
-        case STR: object -> sval = element;
-        case INT: object -> ival = *(int*) element;
-        case FLOAT: object -> fval = *(float*) element;
-        case ARR: object -> aval = element;
-        case OBJECT: object -> oval = element;
+        case STR: new_json_object -> sval = element;
+        case INT: new_json_object -> ival = *(int*) element;
+        case FLOAT: new_json_object -> fval = *(float*) element;
+        case ARR: new_json_object -> aval = element;
+        case OBJECT: new_json_object -> oval = element;
         case EMPTY: break;
     }
+
+    if (object -> type == EMPTY) {
+        *object = *new_json_object;
+        free(new_json_object);
+    } else last_json_object -> next = new_json_object;
 }
 
 // json array

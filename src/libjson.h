@@ -31,6 +31,7 @@ struct json_object {
         json_array *aval;
         json_object *oval;
     };
+    json_object *next;
 };
 
 #define get_json_object(filename) json_object_init(filename)
