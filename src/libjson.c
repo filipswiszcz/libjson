@@ -68,7 +68,24 @@ json_object json_object_init(const char *filename) {
     return object;
 }
 
-char* json_object_get_str(json_object *object, char *key) {}
+json_value json_object_get(json_object *object, char *key) {
+    json_value value = {.type = EMPTY};
+    json_object *current_object = object;
+    while (current_object != NULL) {
+        if (current_object -> key != NULL && strcmp(current_object -> key, key) == 0) {
+            value.type = current_object -> type;
+            switch (current_object -> type) {
+                case STR: return current_object -> sval;
+                case INT: return &current_object -> ival;
+                case FLOAT: return &current_object -> fval;
+                case OBJECT: return current_object -> oval;
+                case EMPTY: return NULL;
+            }
+        }
+        current_object = current_object -> next;
+    }
+    return NULL;
+}
 
 void json_object_add(json_object *object, json_type type, char *key, void *element) {
     json_object *last_json_object = object;

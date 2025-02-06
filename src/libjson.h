@@ -15,34 +15,24 @@ typedef enum {
     EMPTY
 } json_type;
 
-typedef struct json_object json_object;
-// typedef struct json_value json_value;
+typedef struct json_value json_value;
 typedef struct json_array json_array;
+typedef struct json_object json_object;
 
-// json object
+// json value
 
-struct json_object {
+struct json_value {
     json_type type;
-    char *key;
     union {
         char *sval;
         int ival;
         float fval;
         json_array *aval;
         json_object *oval;
-    };
-    json_object *next;
+    } value;
 };
 
-#define get_json_object(filename) json_object_init(filename)
-
-json_object json_object_init(const char *filename);
-
-void json_object_add(json_object *object, json_type type, char *key, void *element); 
-
 // json array
-
-// typedef struct json_array json_array;
 
 struct json_array {
     json_object *objects;
@@ -51,6 +41,22 @@ struct json_array {
 };
 
 void json_array_append(json_array *arr, json_object object);
+
+// json object
+
+struct json_object {
+    char *key;
+    json_value *value;
+    json_object *next;
+};
+
+#define get_json_object(filename) json_object_init(filename)
+
+json_object json_object_init(const char *filename);
+
+json_value json_object_get(json_object *object, char *key);
+
+void json_object_add(json_object *object, json_type type, char *key, void *element); 
 
 
 //                      [json object]
