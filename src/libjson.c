@@ -68,19 +68,11 @@ json_object json_object_init(const char *filename) {
     return object;
 }
 
-json_value json_object_get(json_object *object, char *key) {
-    json_value value = {.type = EMPTY};
+json_value *json_object_get(json_object *object, char *key) {
     json_object *current_object = object;
     while (current_object != NULL) {
         if (current_object -> key != NULL && strcmp(current_object -> key, key) == 0) {
-            value.type = current_object -> type;
-            switch (current_object -> type) {
-                case STR: return current_object -> sval;
-                case INT: return &current_object -> ival;
-                case FLOAT: return &current_object -> fval;
-                case OBJECT: return current_object -> oval;
-                case EMPTY: return NULL;
-            }
+            return current_object -> value;
         }
         current_object = current_object -> next;
     }
@@ -88,27 +80,32 @@ json_value json_object_get(json_object *object, char *key) {
 }
 
 void json_object_add(json_object *object, json_type type, char *key, void *element) {
-    json_object *last_json_object = object;
-    while (last_json_object -> next != NULL) {
-        last_json_object = last_json_object -> next;
+    json_object *last_object = object;
+    while (last_object -> next != NULL) {
+        last_object = last_object -> next;
     }
 
-    json_object *new_json_object = malloc(sizeof(json_object));
-    new_json_object -> type = type;
-    new_json_object -> key = key;
+    json_object *new_object = malloc(sizeof(json_object));
+    new_object -> key = key;
+    new_object -> value = NULL;
+
+    json_value *new_value = malloc(sizeof(json_value));
+    new_value -> type = type;
+
     switch (type) {
-        case STR: new_json_object -> sval = element;
-        case INT: new_json_object -> ival = *(int*) element;
-        case FLOAT: new_json_object -> fval = *(float*) element;
-        case ARR: new_json_object -> aval = element;
-        case OBJECT: new_json_object -> oval = element;
+        case STR: new_value -> value.sval = (char*) element;
+        case INT: new_value -> value.ival = *(int*) element;
+        case FLOAT: new_value -> value.fval = *(float*) element;
+        case ARR: new_value -> value.aval = (json_array*) element;
+        case OBJECT: new_value -> value.oval = (json_object*) element;
         case EMPTY: break;
     }
+    new_object -> value = new_value;
 
-    if (object -> type == EMPTY) {
-        *object = *new_json_object;
-        free(new_json_object);
-    } else last_json_object -> next = new_json_object;
+    if (object -> value == NULL) {
+        *object = *new_object;
+        free(new_object);
+    } else last_object -> next = new_object;
 }
 
 // json array

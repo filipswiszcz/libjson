@@ -54,7 +54,7 @@ struct json_object {
 
 json_object json_object_init(const char *filename);
 
-json_value json_object_get(json_object *object, char *key);
+json_value *json_object_get(json_object *object, char *key);
 
 void json_object_add(json_object *object, json_type type, char *key, void *element); 
 
