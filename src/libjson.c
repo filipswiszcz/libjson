@@ -13,40 +13,63 @@ json_object json_object_init(const char *filename) {
 
     char *line = NULL;
     size_t len = 0;
-    int k = 0, sw = 0, kr = 1;
-    char key[256], val[256];
-    int key_p = 0, val_p = 0;
-    while (getline(&line, &len, file) != -1) {
+
+    int kr = 0, vr = 0; // key/val reading
+
+    // int k = 0, sw = 0, kr = 1;
+    // char key[256], val[256];
+    // int key_p = 0, val_p = 0;
+    while (getline(&line, &len, file) != EOF) {
         for (int i = 0; i < len; i++) {
             if (line[i] == '"') {
-                sw = (sw == 1) ? 0 : 1; continue;
-            }
-            if (sw) {
-                if (kr) key[key_p++] = line[i];
-                else val[val_p++] = line[i];
-            }
-            if (!sw && line[i] == ':') {
-                key[key_p] = '\0';
-                kr = 0; continue;
-            }
-            if (!sw && (line[i] == ',' || line[i] == '}')) {
-                val[val_p] = '\0';
-                if (key_p > 0 && val_p > 0) {
-                    if (val[0] == '"') {
-                        json_object_add(&object, STR, strdup(key), strdup(val));
-                    } else if (strchr(val, '.')) {
-                        float fval = atof(val);
-                        json_object_add(&object, FLOAT, strdup(key), &fval);
-                    } else {
-                        int ival = atoi(val);
-                        json_object_add(&object, INT, strdup(key), &ival);
-                    }
+                if (kr == 0 && vr == 0) {
+                    // TODO clear key buffer;
+                    kr = 1; continue;
+                } else if (vr == 1) {
+                    // TODO save value
+                    vr = 0;
+                } else if (kr == 1) {
+                    // TODO save key
+                    // prepare json_value
+                    kr = 0; continue;
                 }
-                key_p = val_p = 0;
-                kr = 1;
-                memset(key, 0, sizeof(key));
-                memset(val, 0 ,sizeof(val));
             }
+            if (kr == 1) {
+                // TODO read key buffer
+            } else if (vr = 1) {
+                // TODO find type and read to val buffer or init array
+            }
+
+
+            // if (line[i] == '"') {
+            //     sw = (sw == 1) ? 0 : 1; continue;
+            // }
+            // if (sw) {
+            //     if (kr) key[key_p++] = line[i];
+            //     else val[val_p++] = line[i];
+            // }
+            // if (!sw && line[i] == ':') {
+            //     key[key_p] = '\0';
+            //     kr = 0; continue;
+            // }
+            // if (!sw && (line[i] == ',' || line[i] == '}')) {
+            //     val[val_p] = '\0';
+            //     if (key_p > 0 && val_p > 0) {
+            //         if (val[0] == '"') {
+            //             json_object_add(&object, STR, strdup(key), strdup(val));
+            //         } else if (strchr(val, '.')) {
+            //             float fval = atof(val);
+            //             json_object_add(&object, FLOAT, strdup(key), &fval);
+            //         } else {
+            //             int ival = atoi(val);
+            //             json_object_add(&object, INT, strdup(key), &ival);
+            //         }
+            //     }
+            //     key_p = val_p = 0;
+            //     kr = 1;
+            //     memset(key, 0, sizeof(key));
+            //     memset(val, 0 ,sizeof(val));
+            // }
         }
 
         free(line);
