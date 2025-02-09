@@ -15,6 +15,8 @@ json_object json_object_init(const char *filename) {
     size_t len = 0;
 
     int kr = 0, vr = 0; // key/val reading
+    size_t key_size = 16, kcursor = 0;
+    char *key = NULL;
 
     // int k = 0, sw = 0, kr = 1;
     // char key[256], val[256];
@@ -36,6 +38,16 @@ json_object json_object_init(const char *filename) {
             }
             if (kr == 1) {
                 // TODO read key buffer
+                if (++kcursor == key_size) {
+                    char *temp = realloc(key, sizeof *key * (key_size * 2));
+                    if (!temp) {
+                        // log buffer not extended
+                        break; // TODO return something bad
+                    }
+                    key = temp;
+                    key_size *= 2;
+                }
+                key[kcursor - 1] = line[i];
             } else if (vr = 1) {
                 // TODO find type and read to val buffer or init array
             }
@@ -77,6 +89,8 @@ json_object json_object_init(const char *filename) {
 
         return object;
     }
+
+    key[kcursor] = 0;
 
     // json_object *object = calloc(1, sizeof(json_object));
     // json_object object;
