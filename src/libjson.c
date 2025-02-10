@@ -16,7 +16,8 @@ json_object json_object_init(const char *filename) {
 
     int kr = 0, vr = 0; // key/val reading
     size_t key_size = 16, kcursor = 0;
-    char *key = NULL;
+    size_t val_size = 16, vcursor = 0;
+    char *key = NULL, *val = NULL;
 
     // int k = 0, sw = 0, kr = 1;
     // char key[256], val[256];
@@ -50,6 +51,19 @@ json_object json_object_init(const char *filename) {
                 key[kcursor - 1] = line[i];
             } else if (vr = 1) {
                 // TODO find type and read to val buffer or init array
+                if (++vcursor == val_size) {
+                    char *temp = realloc(val, sizeof *val * (val_size * 2));
+                    if (!temp) {break;} // TODO same as above
+                    val = temp;
+                    val_size *= 2;
+                }
+
+                // TODO find if its an array, str, digit or bool
+                if (line[i + 2] != NULL) { // its bad, because json file can be formated in different ways
+
+                }
+
+                val[vcursor - 1] = line[i];
             }
 
 
