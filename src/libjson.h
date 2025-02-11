@@ -32,6 +32,8 @@ struct json_value {
     } value;
 };
 
+json_value *json_value_init(json_type type, void *element);
+
 // json array
 
 struct json_array {

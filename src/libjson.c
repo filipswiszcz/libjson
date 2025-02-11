@@ -1,5 +1,19 @@
 #include "libjson.h"
 
+// json value
+json_value *json_value_init(json_type type, void *element) {
+    json_value *value = malloc(sizeof(json_value));
+    value -> type = type;
+    switch (type) {
+        case STR: value -> value.sval = (char*) element;
+        case INT: value -> value.ival = *(int*) element;
+        case FLOAT: value -> value.fval = *(float*) element;
+        case ARR: value -> value.aval = (json_array*) element;
+        case OBJECT: value -> value.oval = (json_object*) element;
+        case EMPTY: break;
+    }
+    return value;
+}
 
 // json object
 
@@ -18,6 +32,7 @@ json_object json_object_init(const char *filename) {
     size_t key_size = 16, kcursor = 0;
     size_t val_size = 16, vcursor = 0;
     char *key = NULL, *val = NULL;
+    // json_value val;
 
     // int k = 0, sw = 0, kr = 1;
     // char key[256], val[256];
