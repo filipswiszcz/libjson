@@ -42,14 +42,21 @@ json_object json_object_init(const char *filename) {
             if (line[i] == '"') {
                 if (kr == 0 && vr == 0) {
                     // TODO clear key buffer;
+                    kcursor = 0;
+                    memset(key, 0, key_size);
                     kr = 1; continue;
                 } else if (vr == 1) {
                     // TODO save value
+                    val[vcursor] = '\0';
+                    json_object_add(&object, STR, strdup(key), strdup(val));
                     vr = 0;
                 } else if (kr == 1) {
                     // TODO save key
                     // prepare json_value
-                    kr = 0; continue;
+                    kr = 0; vr = 1;
+                    vcursor = 0;
+                    memset(val, 0, val_size);
+                    continue;
                 }
             }
             if (kr == 1) {
