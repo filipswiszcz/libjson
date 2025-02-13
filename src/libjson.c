@@ -183,6 +183,16 @@ void json_object_add(json_object *object, json_type type, char *key, void *eleme
 
 // json array
 
+json_object *json_array_get(json_array *arr, char *key) {
+    json_object *current_object = arr -> objects;
+    while (current_object != NULL) {
+        if (current_object -> key != NULL && strcmp(current_object -> key, key) == 0) {
+            return current_object -> value;
+        }
+        current_object = current_object -> next;
+    }
+}
+
 void json_array_append(json_array *arr, json_object object) {
     do {
         if (arr -> k >= arr -> capacity) {
