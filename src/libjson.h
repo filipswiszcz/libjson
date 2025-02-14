@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 
 typedef enum {
@@ -42,7 +43,7 @@ struct json_array {
     size_t capacity;
 };
 
-void json_array_get(json_array *arr, char *key);
+void *json_array_get(json_array *arr, char *key);
 
 void json_array_append(json_array *arr, json_object object);
 
