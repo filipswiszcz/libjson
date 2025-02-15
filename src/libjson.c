@@ -15,6 +15,17 @@ json_value *json_value_init(json_type type, void *element) {
     return value;
 }
 
+void *get_json_value(json_value *value) {
+    switch (value -> type) {
+        case STR: return value -> value.sval;
+        case INT: return &(value -> value.ival);
+        case FLOAT: return &(value -> value.fval);
+        case ARR: return value -> value.aval;
+        case OBJECT: return value -> value.oval;
+        case EMPTY: return NULL;
+    }
+}
+
 // json object
 
 json_object json_object_init(const char *filename) {

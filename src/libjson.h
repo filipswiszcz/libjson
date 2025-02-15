@@ -35,6 +35,8 @@ struct json_value {
 
 json_value *json_value_init(json_type type, void *element);
 
+void *get_json_value(json_value value);
+
 // json array
 
 struct json_array {
@@ -43,7 +45,7 @@ struct json_array {
     size_t capacity;
 };
 
-void *json_array_get(json_array *arr, char *key);
+json_object *json_array_get(json_array *arr, char *key);
 
 void json_array_append(json_array *arr, json_object object);
 
